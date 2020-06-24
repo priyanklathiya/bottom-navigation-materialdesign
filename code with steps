@@ -1,0 +1,129 @@
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+STEP 1 : add material dependency (add the latest one)
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+
+dependencies {
+  implementation 'com.google.android.material:material:1.1.0'
+}
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+STEP 2 : create Drawable resource file as bottom_nav_animation.xml in res > drawable and add the following code
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:state_checked="true"
+        android:color="#6200EE" />
+
+    <item android:state_checked="false"
+        android:color="#D3D3D3" />
+
+
+</selector>
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+STEP 3 : create new AndroidResourceDirectory (name it menu) then create new menu resource file as activity_main_drawer.xml and add code as follows  
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+first add required icons in drawable directory
+app > res > menu > activity_main_drawer.xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/ic_home"
+        android:title="Home"/>
+    <item
+        android:id="@+id/nav_search"
+        android:icon="@drawable/ic_search"
+        android:title="Search"/>
+    <item
+        android:id="@+id/nav_add"
+        android:icon="@drawable/ic_add"
+        android:title="Add"/>
+    <item
+        android:id="@+id/nav_settings"
+        android:icon="@drawable/ic_settings"
+        android:title="Settings"/>
+
+</menu>
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+STEP 4 : add following code in activity_main.xml file
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:id="@+id/framelay"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+    
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_nav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:menu="@menu/bottom_navigation_menu"
+        android:background="#ffffff"
+        app:itemIconTint="@drawable/bottom_nav_animation"
+        app:itemTextColor="@drawable/bottom_nav_animation"
+        />
+
+</LinearLayout>
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+STEP 5 : add following code in MainActivity.java file
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+
+package com.example.bottomnavigationmaterialdesign;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.MenuItem;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
+
+    private BottomNavigationView bottom_nav;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        bottom_nav = findViewById(R.id.bottom_nav);
+        bottom_nav.setOnNavigationItemSelectedListener(this);
+        bottom_nav.setSelectedItemId(R.id.nav_home);
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.nav_home:
+                getSupportFragmentManager().beginTransaction().replace(R.id.framelay, new HomeFragment()).commit();
+                return true;
+            case R.id.nav_search:
+                getSupportFragmentManager().beginTransaction().replace(R.id.framelay,  new SearchFragment()).commit();
+                return true;
+            case R.id.nav_add:
+                getSupportFragmentManager().beginTransaction().replace(R.id.framelay, new AddFragment()).commit();
+                return true;
+            case R.id.nav_settings:
+                getSupportFragmentManager().beginTransaction().replace(R.id.framelay, new SettingdFragment()).commit();
+                return true;
+
+        }
+        return false;
+    }
+}
